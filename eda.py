@@ -45,6 +45,5 @@ print(df[['Profit']])
 print(df.columns.tolist())
 print(df.head())
 
-
 summary=df.describe()
 summary.to_csv("summary.csv")
