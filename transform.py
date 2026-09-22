@@ -1,24 +1,16 @@
-
 import pandas as pd
 
 
 def transform_data(df):
-    """
-    Clean and transform the extracted DataFrame.
-    """
-
     print("\n========== TRANSFORM STAGE ==========")
 
     if df is None or df.empty:
         raise ValueError("No data available for transformation.")
 
-    # Make a copy so the original DataFrame is not modified
     df = df.copy()
 
-    # Remove completely empty rows
+    # Remove empty and duplicate rows
     df = df.dropna(how="all")
-
-    # Remove duplicate rows
     df = df.drop_duplicates()
 
     # Clean column names
@@ -28,6 +20,19 @@ def transform_data(df):
         .str.lower()
         .str.replace(" ", "_")
     )
+
+    # Standardize common column names
+    rename = {
+        "date": "order_date",
+        "orderdate": "order_date",
+        "qty": "quantity",
+        "units": "quantity",
+        "sales": "revenue",
+        "total_sales": "revenue",
+        "net_profit": "profit"
+    }
+
+    df = df.rename(columns=rename)
 
     print("Transformation Successful")
     print("Rows:", df.shape[0])

@@ -1,54 +1,49 @@
-
-import os
 import pandas as pd
+from pathlib import Path
 
 
 def extract_data(folder_path):
-    """
-    Extract Excel files from the given folder.
-    """
 
     print("\n========== EXTRACT STAGE ==========")
 
-    if not os.path.exists(folder_path):
-        raise FileNotFoundError(
-            f"Folder not found: {folder_path}"
-        )
+    folder_path = Path(folder_path)
 
-    # Find Excel files
-    excel_files = [
-        file for file in os.listdir(folder_path)
-        if file.lower().endswith((".xlsx", ".xls"))
-    ]
+    readers = {
+        ".csv": pd.read_csv,
+        ".xlsx": pd.read_excel,
+        ".xls": pd.read_excel,
+    }
 
-    if not excel_files:
+    files = [f for f in folder_path.iterdir() if f.is_file()]
+
+    if not files:
         raise FileNotFoundError(
-            f"No Excel files found in: {folder_path}"
+            f"No files found in: {folder_path}"
         )
 
     dataframes = []
 
-    for file in excel_files:
+    for file_path in files:
 
-        file_path = os.path.join(folder_path, file)
+        extension = file_path.suffix.lower()
 
-        print(f"Reading: {file}")
+        reader = readers.get(extension)
 
-        df = pd.read_excel(file_path)
+        if reader is None:
+            print(f"Skipping unsupported file: {file_path.name}")
+            continue
 
-        # Add source filename
-        df["Source_File"] = file
+        print(f"Reading: {file_path.name}")
+
+        df = reader(file_path)
 
         dataframes.append(df)
 
-    # Combine all Excel files
-    final_df = pd.concat(
-        dataframes,
-        ignore_index=True
-    )
+    if not dataframes:
+        raise ValueError("No supported CSV/Excel files found.")
 
-    print("\nExtraction Successful")
-    print("Files:", len(excel_files))
+    final_df = pd.concat(dataframes, ignore_index=True)
+
     print("Rows:", final_df.shape[0])
     print("Columns:", final_df.shape[1])
 

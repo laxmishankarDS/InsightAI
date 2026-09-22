@@ -1,4 +1,3 @@
-
 from extract import extract_data
 from transform import transform_data
 from load import load_data
@@ -8,6 +7,7 @@ def main():
 
     # Input folder
     input_folder = r"C:\Users\maury\Downloads\archive"
+    print("Input folder:", input_folder)
 
     # Output folder
     output_folder = r"C:\Users\maury\Downloads\InsightAI_Output"
@@ -37,3 +37,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
