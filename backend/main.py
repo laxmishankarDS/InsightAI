@@ -96,10 +96,12 @@ if OpenAI is not None and HF_TOKEN:
 # PATHS
 # ============================================================
 
-OUTPUT_FOLDER = (
-    r"C:\Users\maury\Downloads\InsightAI_Output"
-)
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+OUTPUT_FOLDER = os.path.join(
+    PROJECT_ROOT,
+    "InsightAI_Output"
+)
 FEATURE_FILE = os.path.join(
     OUTPUT_FOLDER,
     "feature_data.csv"

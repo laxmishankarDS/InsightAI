@@ -1,0 +1,81 @@
+{
+    "target": "revenue",
+    "target_detection_method": "environment_variable",
+    "task_type": "regression",
+    "forecasting_target": true,
+    "split_method": "chronological_time_split",
+    "forecast_date_column": "order_date",
+    "selected_features": [
+        "order_date_year",
+        "order_date_month",
+        "order_date_quarter",
+        "order_date_day_of_week",
+        "state",
+        "region",
+        "country",
+        "category",
+        "sub_category",
+        "product_name"
+    ],
+    "numeric_features": [
+        "order_date_year",
+        "order_date_month",
+        "order_date_quarter",
+        "order_date_day_of_week"
+    ],
+    "categorical_features": [
+        "state",
+        "region",
+        "country",
+        "category",
+        "sub_category",
+        "product_name"
+    ],
+    "date_columns": [
+        "order_date"
+    ],
+    "converted_numeric_columns": [],
+    "excluded_id_columns": [
+        "order_id"
+    ],
+    "excluded_high_cardinality_columns": [
+        "customer_name",
+        "city"
+    ],
+    "excluded_constant_numeric_features": [],
+    "excluded_redundant_numeric_features": [],
+    "excluded_target_leakage_features": [
+        "profit",
+        "profit_margin",
+        "quantity",
+        "revenue_per_unit",
+        "unit_price"
+    ],
+    "available_targets": [
+        "quantity",
+        "unit_price",
+        "revenue",
+        "profit",
+        "order_date_year",
+        "order_date_month",
+        "order_date_quarter",
+        "order_date_day_of_week",
+        "profit_margin",
+        "revenue_per_unit"
+    ],
+    "best_model": "Linear Regression",
+    "metrics": {
+        "r2": 0.27405941520213584,
+        "mae": 417.88206497302224,
+        "rmse": 633.255496553099
+    },
+    "training_rows": 160000,
+    "testing_rows": 40000,
+    "feature_count": 10,
+    "numeric_feature_count": 4,
+    "categorical_feature_count": 6,
+    "test_size": 0.2,
+    "random_state": 42,
+    "max_categorical_unique": 100,
+    "redundant_feature_correlation": 0.9999
+}

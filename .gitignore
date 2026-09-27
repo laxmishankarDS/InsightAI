@@ -3,7 +3,38 @@ __pycache__/
 *.pyc
 .env
 
+# Old/generated project files
 insightai_engineered_dataset.csv
 model_comparison.csv
 prediction_results.csv
 target_encoding_info.pkl
+
+# Old local model folder
+models/
+
+# Runtime uploaded datasets
+InsightAI_Output/uploaded_*.csv
+
+# Generated analysis files
+InsightAI_Output/*.png
+InsightAI_Output/actual_vs_predicted.csv
+InsightAI_Output/cross_validation_results.csv
+InsightAI_Output/daily_sales.csv
+InsightAI_Output/daily_sales_with_features.csv
+InsightAI_Output/detailed_error_analysis.csv
+InsightAI_Output/error_analysis.csv
+InsightAI_Output/feature_importance.csv
+InsightAI_Output/missing_values.csv
+InsightAI_Output/monthly_sales.csv
+InsightAI_Output/numeric_analysis.csv
+InsightAI_Output/summary.csv
+InsightAI_Output/validation_report.csv
+
+InsightAI_Output/correlation.csv
+InsightAI_Output/cross_validation_report.json
+InsightAI_Output/error_analysis_summary.json
+InsightAI_Output/evaluation_report.json
+InsightAI_Output/feature_importance_report.json
+InsightAI_Output/final_model.joblib
+InsightAI_Output/seasonal_lookup.csv
+InsightAI_Output/validation_report.txt
