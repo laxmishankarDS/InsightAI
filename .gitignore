@@ -2,3 +2,8 @@
 __pycache__/
 *.pyc
 .env
+
+insightai_engineered_dataset.csv
+model_comparison.csv
+prediction_results.csv
+target_encoding_info.pkl
