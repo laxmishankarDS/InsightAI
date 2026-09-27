@@ -1,0 +1,87 @@
+{
+    "analysis": "Prediction Reliability / Calibration Analysis",
+    "model": "Gradient Boosting",
+    "target": "profit_margin",
+    "test_rows": 40000,
+    "test_size": 0.2,
+    "random_state": 42,
+    "target_min": 7.999264435454211,
+    "target_max": 49.99762909573712,
+    "metrics": {
+        "r2": 0.5785100842055992,
+        "mae": 5.614508218267308,
+        "rmse": 6.777453740586594,
+        "mean_error": -0.009102432866046449,
+        "median_error": 0.0015366236059790594,
+        "mean_absolute_error": 5.614508218267308,
+        "median_absolute_error": 4.963713627954812
+    },
+    "bias": {
+        "over_prediction_count": 20004,
+        "under_prediction_count": 19996,
+        "exact_prediction_count": 0,
+        "over_prediction_percentage": 50.01,
+        "under_prediction_percentage": 49.99,
+        "exact_prediction_percentage": 0.0
+    },
+    "target_range_thresholds": {
+        "low": 20,
+        "high": 35
+    },
+    "residual_percentiles": {
+        "p01": -14.259534835792465,
+        "p05": -11.067472425987347,
+        "p10": -9.407961185179865,
+        "p25": -4.945201448163549,
+        "p50": 0.0015366236059790594,
+        "p75": 4.985511592810438,
+        "p90": 9.373944584887854,
+        "p95": 11.102892378275428,
+        "p99": 14.161139596565144
+    },
+    "absolute_error_percentiles": {
+        "p50": 4.963713627954812,
+        "p75": 8.55021570354955,
+        "p90": 11.084768881715014,
+        "p95": 12.231011268800957,
+        "p99": 15.112525258717218
+    },
+    "error_bands": [
+        {
+            "error_band": "Very Low Error (<=2)",
+            "sample_count": 8104,
+            "percentage": 20.26
+        },
+        {
+            "error_band": "Low Error (2-5)",
+            "sample_count": 12032,
+            "percentage": 30.080000000000002
+        },
+        {
+            "error_band": "Moderate Error (5-10)",
+            "sample_count": 13335,
+            "percentage": 33.3375
+        },
+        {
+            "error_band": "High Error (10-15)",
+            "sample_count": 6090,
+            "percentage": 15.225
+        },
+        {
+            "error_band": "Very High Error (>15)",
+            "sample_count": 439,
+            "percentage": 1.0975000000000001
+        }
+    ],
+    "calibration": {
+        "number_of_bins": 10,
+        "available": true
+    },
+    "files": {
+        "actual_vs_predicted": "C:\\Users\\maury\\OneDrive\\Documents\\insightAI\\insightai_website\\evaluation\\prediction_reliability_actual_vs_predicted.csv",
+        "by_range": "C:\\Users\\maury\\OneDrive\\Documents\\insightAI\\insightai_website\\evaluation\\prediction_reliability_by_range.csv",
+        "error_bands": "C:\\Users\\maury\\OneDrive\\Documents\\insightAI\\insightai_website\\evaluation\\prediction_error_bands.csv",
+        "extreme_errors": "C:\\Users\\maury\\OneDrive\\Documents\\insightAI\\insightai_website\\evaluation\\prediction_extreme_errors.csv",
+        "calibration": "C:\\Users\\maury\\OneDrive\\Documents\\insightAI\\insightai_website\\evaluation\\prediction_calibration.csv"
+    }
+}

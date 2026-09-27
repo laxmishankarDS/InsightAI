@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>InsightAI Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     SIDEBAR
+====================================================== -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-icon">IA</div>
+
+        <div>
+            <h2>InsightAI</h2>
+            <span>Analytics Platform</span>
+        </div>
+    </div>
+
+
+    <nav>
+
+        <a class="nav-item active">
+            <span>▦</span>
+            Dashboard
+        </a>
+
+        <a class="nav-item">
+            <span>◈</span>
+            Analytics
+        </a>
+
+        <a class="nav-item">
+            <span>◉</span>
+            AI Prediction
+        </a>
+
+        <a class="nav-item">
+            <span>⌁</span>
+            Forecast
+        </a>
+
+        <a class="nav-item">
+            <span>▤</span>
+            Reports
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <a class="nav-item">
+            <span>⚙</span>
+            Settings
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN
+====================================================== -->
+
+<main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <div>
+
+            <p class="eyebrow">
+                BUSINESS INTELLIGENCE
+            </p>
+
+            <h1>Sales Dashboard</h1>
+
+            <p class="subtitle">
+                Understand your business through data.
+            </p>
+
+        </div>
+
+
+        <div class="top-actions">
+
+            <button
+                class="refresh-btn"
+                onclick="loadDashboard()">
+
+                ↻ Refresh
+
+            </button>
+
+            <div class="status">
+
+                <span class="status-dot"></span>
+
+                Live Data
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =================================================
+         FILTERS
+    ================================================== -->
+
+    <section class="filter-panel">
+
+        <div class="filter-heading">
+
+            <div>
+
+                <h3>Dashboard Filters</h3>
+
+                <span>
+                    Explore your sales data
+                </span>
+
+            </div>
+
+            <button
+                class="reset-btn"
+                onclick="resetFilters()">
+
+                Reset Filters
+
+            </button>
+
+        </div>
+
+
+        <div class="filters">
+
+            <div class="filter">
+
+                <label>Category</label>
+
+                <select id="categoryFilter">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="filter">
+
+                <label>Region</label>
+
+                <select id="regionFilter">
+
+                    <option value="">
+                        All Regions
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="filter">
+
+                <label>Product</label>
+
+                <select id="productFilter">
+
+                    <option value="">
+                        All Products
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="apply-btn"
+                onclick="loadDashboard()">
+
+                Apply Filters
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         KPI CARDS
+    ================================================== -->
+
+    <section class="kpi-grid">
+
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Total Revenue
+                </span>
+
+                <span class="kpi-icon revenue-icon">
+                    ₹
+                </span>
+
+            </div>
+
+            <h2 id="revenue">
+                ₹0
+            </h2>
+
+            <p class="kpi-description">
+                Total generated revenue
+            </p>
+
+        </div>
+
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Total Profit
+                </span>
+
+                <span class="kpi-icon profit-icon">
+                    ↗
+                </span>
+
+            </div>
+
+            <h2 id="profit">
+                ₹0
+            </h2>
+
+            <p class="kpi-description">
+                Overall business profit
+            </p>
+
+        </div>
+
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Total Orders
+                </span>
+
+                <span class="kpi-icon order-icon">
+                    #
+                </span>
+
+            </div>
+
+            <h2 id="orders">
+                0
+            </h2>
+
+            <p class="kpi-description">
+                Unique orders
+            </p>
+
+        </div>
+
+
+        <div class="kpi-card">
+
+            <div class="kpi-top">
+
+                <span class="kpi-label">
+                    Quantity Sold
+                </span>
+
+                <span class="kpi-icon quantity-icon">
+                    ◈
+                </span>
+
+            </div>
+
+            <h2 id="quantity">
+                0
+            </h2>
+
+            <p class="kpi-description">
+                Total units sold
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         CHARTS
+    ================================================== -->
+
+    <section class="chart-grid">
+
+
+        <div class="panel large-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>Revenue & Profit Trend</h3>
+
+                    <p>
+                        Monthly business performance
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="salesChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>Category Performance</h3>
+
+                    <p>
+                        Revenue by category
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="categoryChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         LOWER SECTION
+    ================================================== -->
+
+    <section class="bottom-grid">
+
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>Top Products</h3>
+
+                    <p>
+                        Highest revenue generating products
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Product</th>
+                            <th>Revenue</th>
+                            <th>Quantity</th>
+                            <th>Profit</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="productTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>Regional Performance</h3>
+
+                    <p>
+                        Revenue by region
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-container small-chart">
+
+                <canvas id="regionChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         FOOTER
+    ================================================== -->
+
+    <footer>
+
+        <span>
+            InsightAI • Predictive Sales & Demand Analytics
+        </span>
+
+        <span id="lastUpdated">
+            Last updated: —
+        </span>
+
+    </footer>
+
+
+</main>
+
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+
+</body>
+
+</html>

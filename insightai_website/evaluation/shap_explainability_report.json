@@ -1,0 +1,147 @@
+{
+    "analysis": "shap_explainability",
+    "model": "Gradient Boosting",
+    "target": "profit_margin",
+    "test_rows": 40000,
+    "shap_sample_rows": 10000,
+    "local_explanation_rows": 20,
+    "test_r2": 0.5785100842055992,
+    "transformed_feature_count": 126,
+    "top_features": [
+        {
+            "rank": 1,
+            "transformed_feature": "category_Electronics",
+            "mean_absolute_shap": 6.353901828165822,
+            "mean_shap": -0.4616724965467565
+        },
+        {
+            "rank": 2,
+            "transformed_feature": "category_Home & Furniture",
+            "mean_absolute_shap": 3.049637156673242,
+            "mean_shap": 0.3004039260441134
+        },
+        {
+            "rank": 3,
+            "transformed_feature": "unit_price",
+            "mean_absolute_shap": 0.23292424206365717,
+            "mean_shap": 0.23006435056914
+        },
+        {
+            "rank": 4,
+            "transformed_feature": "revenue",
+            "mean_absolute_shap": 0.2080854013225849,
+            "mean_shap": -0.18673649376175216
+        },
+        {
+            "rank": 5,
+            "transformed_feature": "category_Accessories",
+            "mean_absolute_shap": 0.192411903419699,
+            "mean_shap": -0.04023635814627139
+        },
+        {
+            "rank": 6,
+            "transformed_feature": "category_Clothing & Apparel",
+            "mean_absolute_shap": 0.16245293530184754,
+            "mean_shap": 0.060252213360941165
+        },
+        {
+            "rank": 7,
+            "transformed_feature": "product_name_Power Bank",
+            "mean_absolute_shap": 0.013512364921246228,
+            "mean_shap": -0.009469044976794586
+        },
+        {
+            "rank": 8,
+            "transformed_feature": "product_name_Backpack",
+            "mean_absolute_shap": 0.011090506463189511,
+            "mean_shap": -0.001180789033066974
+        },
+        {
+            "rank": 9,
+            "transformed_feature": "product_name_Watch Strap",
+            "mean_absolute_shap": 0.010214857429026522,
+            "mean_shap": -0.0016445170877453015
+        },
+        {
+            "rank": 10,
+            "transformed_feature": "state_Arizona",
+            "mean_absolute_shap": 0.006433337883102489,
+            "mean_shap": -0.00155379916314331
+        },
+        {
+            "rank": 11,
+            "transformed_feature": "product_name_Wall Art",
+            "mean_absolute_shap": 0.0059211643538300196,
+            "mean_shap": 0.0009559818327134442
+        },
+        {
+            "rank": 12,
+            "transformed_feature": "state_Delaware",
+            "mean_absolute_shap": 0.005760377042102511,
+            "mean_shap": -0.0005033148688610243
+        },
+        {
+            "rank": 13,
+            "transformed_feature": "state_Tennessee",
+            "mean_absolute_shap": 0.005259253677198466,
+            "mean_shap": 0.00012489114789199845
+        },
+        {
+            "rank": 14,
+            "transformed_feature": "product_name_Charging Cable",
+            "mean_absolute_shap": 0.004696245093001791,
+            "mean_shap": -0.0017517402162946624
+        },
+        {
+            "rank": 15,
+            "transformed_feature": "state_Alabama",
+            "mean_absolute_shap": 0.004260000787382607,
+            "mean_shap": -0.00013872088278843496
+        }
+    ],
+    "category_analysis": [
+        {
+            "category": "Electronics",
+            "sample_count": 2633,
+            "mean_category_shap": 14.356395190985399,
+            "median_category_shap": 14.311726129070179,
+            "std_category_shap": 0.09801667607073718,
+            "min_category_shap": 13.740893697326486,
+            "max_category_shap": 14.704478070282557
+        },
+        {
+            "category": "Home & Furniture",
+            "sample_count": 2508,
+            "mean_category_shap": 8.91069590012547,
+            "median_category_shap": 8.884662541033315,
+            "std_category_shap": 0.08756308291782866,
+            "min_category_shap": 8.58498209435362,
+            "max_category_shap": 9.176339763610192
+        },
+        {
+            "category": "Accessories",
+            "sample_count": 1800,
+            "mean_category_shap": 8.170847972623466,
+            "median_category_shap": 8.185778669527426,
+            "std_category_shap": 0.0965126240789748,
+            "min_category_shap": 7.781189027551762,
+            "max_category_shap": 8.620943701419742
+        },
+        {
+            "category": "Clothing & Apparel",
+            "sample_count": 3059,
+            "mean_category_shap": 7.45461376552653,
+            "median_category_shap": 7.469948457349723,
+            "std_category_shap": 0.08160553929540379,
+            "min_category_shap": 7.020019241505186,
+            "max_category_shap": 7.848687195081508
+        }
+    ],
+    "interpretation_notes": [
+        "Mean absolute SHAP measures average magnitude of feature contribution.",
+        "Positive mean SHAP indicates an overall tendency to increase predictions, while negative mean SHAP indicates an overall tendency to decrease predictions.",
+        "One-hot encoded categorical levels appear as separate transformed features.",
+        "Category-level SHAP results should be interpreted together with the category-only baseline and feature-ablation analysis.",
+        "SHAP explains the fitted model's behaviour; it does not establish causal relationships."
+    ]
+}

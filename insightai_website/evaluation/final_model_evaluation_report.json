@@ -1,0 +1,157 @@
+{
+    "project": "InsightAI",
+    "analysis": "Final Model Evaluation & Limitations",
+    "model": {
+        "name": "Gradient Boosting",
+        "target": "profit_margin",
+        "training_rows": 160000,
+        "testing_rows": 40000,
+        "test_size": 0.2,
+        "random_state": 42,
+        "selected_features": [
+            "unit_price",
+            "revenue",
+            "state",
+            "region",
+            "country",
+            "category",
+            "sub_category",
+            "product_name"
+        ],
+        "numeric_features": [
+            "unit_price",
+            "revenue"
+        ],
+        "categorical_features": [
+            "state",
+            "region",
+            "country",
+            "category",
+            "sub_category",
+            "product_name"
+        ]
+    },
+    "test_metrics": {
+        "r2": 0.5785100842055992,
+        "mae": 5.614508218267308,
+        "rmse": 6.777453740586594
+    },
+    "cross_validation": {
+        "folds": 5,
+        "mean_r2": null,
+        "std_r2": null,
+        "mean_mae": null,
+        "std_mae": null,
+        "mean_rmse": null,
+        "std_rmse": null
+    },
+    "error_analysis": {
+        "mean_error": null,
+        "median_error": null,
+        "p50_absolute_error": null,
+        "p90_absolute_error": null,
+        "p95_absolute_error": null,
+        "p99_absolute_error": null,
+        "max_absolute_error": null,
+        "over_prediction_count": null,
+        "under_prediction_count": null
+    },
+    "category_baseline": {
+        "r2": 0.5786574621192315,
+        "mae": 5.613695543797719,
+        "rmse": 6.776268736765716
+    },
+    "feature_analysis": {
+        "top_permutation_feature": null,
+        "top_permutation_importance": null
+    },
+    "target_distribution": {
+        "mean": null,
+        "median": null,
+        "std": null,
+        "min": null,
+        "max": null
+    },
+    "prediction_reliability": {
+        "r2": 0.5785100842055992,
+        "mae": 5.614508218267308,
+        "rmse": 6.777453740586594,
+        "mean_error": -0.009102432866046449,
+        "median_error": 0.0015366236059790594,
+        "over_prediction_percentage": 50.01,
+        "under_prediction_percentage": 49.99,
+        "low_range_mean_error": 2.3140455506048574,
+        "medium_range_mean_error": 1.922123096999618,
+        "high_range_mean_error": -7.929628120418036,
+        "high_range_mae": 7.9297455573913505,
+        "largest_calibration_gap": 11.063400390257575,
+        "largest_calibration_bin": "(41.126, 49.998]",
+        "calibration_available": true
+    },
+    "limitations": [
+        {
+            "limitation_id": 1,
+            "area": "Extreme Target Values",
+            "finding": "The model tends to pull extreme low and high profit-margin values toward the middle prediction range.",
+            "evidence": "Low and high target ranges show directional bias, while the largest calibration gap occurs in the highest target bin.",
+            "impact": "Predictions for unusually low or unusually high profit margins can have substantially larger errors.",
+            "status": "Observed"
+        },
+        {
+            "limitation_id": 2,
+            "area": "Category Dependence",
+            "finding": "Category is the dominant original feature in permutation importance and SHAP-based analysis.",
+            "evidence": "Category-only baseline produces performance very close to the full selected-feature model.",
+            "impact": "The current predictive signal is strongly associated with category-level target differences.",
+            "status": "Observed"
+        },
+        {
+            "limitation_id": 3,
+            "area": "Within-Category Variation",
+            "finding": "Category-level predictions capture group-level differences but do not fully explain variation within individual categories.",
+            "evidence": "Category-level R\u00b2 values are close to zero despite a substantially higher overall R\u00b2.",
+            "impact": "Additional variables may be required to explain individual-row variation.",
+            "status": "Observed"
+        },
+        {
+            "limitation_id": 4,
+            "area": "Feature Incremental Value",
+            "finding": "Adding the currently selected features produces only very small changes compared with the category-only baseline.",
+            "evidence": "Feature ablation experiments show near-identical R\u00b2, MAE and RMSE values.",
+            "impact": "The current dataset may not contain enough independent predictive information beyond category.",
+            "status": "Observed"
+        },
+        {
+            "limitation_id": 5,
+            "area": "Prediction Error",
+            "finding": "Prediction error remains material for a portion of observations.",
+            "evidence": "The P90 and P95 absolute-error values are substantially above the median absolute error.",
+            "impact": "Individual predictions should be interpreted with their expected error range rather than as exact values.",
+            "status": "Observed"
+        },
+        {
+            "limitation_id": 6,
+            "area": "Feature Coverage",
+            "finding": "The current model uses the features selected from the available dataset and does not include additional business variables that may influence profit margin.",
+            "evidence": "Feature ablation and error analysis indicate limited incremental signal from the current feature set.",
+            "impact": "Additional business-relevant variables could potentially improve within-category and extreme-value predictions.",
+            "status": "Potential"
+        },
+        {
+            "limitation_id": 7,
+            "area": "Explainability Scope",
+            "finding": "SHAP and permutation importance describe model behavior and feature contribution but do not establish causal relationships.",
+            "evidence": "Feature importance results are model-specific statistical explanations.",
+            "impact": "Feature importance should not be interpreted as proof that a feature causes changes in profit margin.",
+            "status": "Methodological"
+        },
+        {
+            "limitation_id": 8,
+            "area": "Generalization",
+            "finding": "Evaluation is based on the available dataset and its train/test distribution.",
+            "evidence": "The evaluation uses a reproducible 80/20 split and five-fold cross-validation on the same dataset.",
+            "impact": "Performance on future datasets or substantially different business conditions may differ.",
+            "status": "Methodological"
+        }
+    ]
+}

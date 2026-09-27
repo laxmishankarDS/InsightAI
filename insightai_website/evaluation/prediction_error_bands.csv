@@ -1,0 +1,6 @@
+error_band,sample_count,percentage
+Very Low Error (<=2),8104,20.26
+Low Error (2-5),12032,30.080000000000002
+Moderate Error (5-10),13335,33.3375
+High Error (10-15),6090,15.225
+Very High Error (>15),439,1.0975000000000001

@@ -1,4 +1,3 @@
-
 import os
 import pandas as pd
 
@@ -13,7 +12,6 @@ def load_data(df, output_folder):
     if df is None or df.empty:
         raise ValueError("No data available to load.")
 
-    # Create output folder if it doesn't exist
     os.makedirs(output_folder, exist_ok=True)
 
     output_file = os.path.join(
@@ -27,4 +25,3 @@ def load_data(df, output_folder):
     print("Output File:", output_file)
 
     return output_file
-

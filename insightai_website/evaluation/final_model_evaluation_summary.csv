@@ -1,0 +1,23 @@
+section,metric,value,interpretation
+Model,Selected Model,Gradient Boosting,Saved production model evaluated on the exact test split.
+Model,Target,profit_margin,Prediction target used by InsightAI.
+Evaluation,Test R2,0.5785100842055992,Overall coefficient of determination on the held-out test set.
+Evaluation,Test MAE,5.614508218267308,Average absolute prediction error in target units.
+Evaluation,Test RMSE,6.777453740586594,Root mean squared prediction error.
+Cross Validation,Mean R2,,Average R2 across five shuffled folds.
+Cross Validation,R2 Standard Deviation,,Small variation indicates stable performance across folds.
+Cross Validation,Mean MAE,,Average MAE across five folds.
+Cross Validation,Mean RMSE,,Average RMSE across five folds.
+Error Analysis,Mean Error,,Near-zero value indicates little overall directional bias.
+Error Analysis,P50 Absolute Error,,Median absolute prediction error.
+Error Analysis,P90 Absolute Error,,90% of predictions have absolute error at or below this value.
+Error Analysis,Maximum Absolute Error,,Largest observed absolute prediction error.
+Baseline,Category-Only R2,0.5786574621192315,Performance of a category-only linear baseline.
+Baseline,Category-Only MAE,5.613695543797719,Category-only baseline absolute error.
+Reliability,Over Prediction %,50.01,Percentage of test predictions above the actual target.
+Reliability,Under Prediction %,49.99,Percentage of test predictions below the actual target.
+Reliability,High Target Range Mean Error,-7.929628120418036,Bias observed for actual profit margins >=35.
+Reliability,Largest Calibration Gap,11.063400390257575,Largest difference between actual-bin mean and predicted-bin mean.
+Feature Analysis,Top Permutation Feature,,Highest measured permutation importance in the evaluation.
+Target Distribution,Target Mean,,Overall mean profit margin.
+Target Distribution,Target Standard Deviation,,Overall target variability.

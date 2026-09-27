@@ -1,0 +1,58 @@
+{
+    "analysis": "category_only_baseline",
+    "target": "profit_margin",
+    "feature": "category",
+    "model": "Linear Regression",
+    "dataset_rows": 200000,
+    "usable_rows": 200000,
+    "training_rows": 160000,
+    "test_rows": 40000,
+    "number_of_categories": 4,
+    "test_size": 0.2,
+    "random_state": 42,
+    "metrics": {
+        "r2": 0.5786574621192315,
+        "mae": 5.613695543797719,
+        "rmse": 6.776268736765716,
+        "mean_error": -0.008562906710819674,
+        "median_error": -0.01462832147970694
+    },
+    "category_results": [
+        {
+            "category": "Accessories",
+            "sample_count": 7237,
+            "actual_mean": 34.08411565540586,
+            "predicted_mean": 34.068190170203124,
+            "mean_error": -0.01592548520275141,
+            "mae": 8.029526628787645,
+            "rmse": 9.266276933439954
+        },
+        {
+            "category": "Clothing & Apparel",
+            "sample_count": 12424,
+            "actual_mean": 32.5031874326969,
+            "predicted_mean": 32.480340886691245,
+            "mean_error": -0.022846546005644102,
+            "mae": 6.263554166291939,
+            "rmse": 7.226132670993034
+        },
+        {
+            "category": "Electronics",
+            "sample_count": 10248,
+            "actual_mean": 14.060241462657483,
+            "predicted_mean": 14.018112492225276,
+            "mean_error": -0.04212897043220778,
+            "mae": 2.9743707810836613,
+            "rmse": 3.446466956656683
+        },
+        {
+            "category": "Home & Furniture",
+            "sample_count": 10091,
+            "actual_mean": 23.46015939986327,
+            "predicted_mean": 23.508551000749492,
+            "mean_error": 0.048391600886226585,
+            "mae": 5.761410049828176,
+            "rmse": 6.63952657454406
+        }
+    ]
+}
