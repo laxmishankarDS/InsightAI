@@ -1,60 +1,74 @@
 {
-    "target": "revenue",
+    "target": "profit",
     "target_detection_method": "environment_variable",
     "task_type": "regression",
-    "forecasting_target": true,
-    "split_method": "chronological_time_split",
+    "forecasting_target": false,
+    "split_method": "random_train_test_split",
     "forecast_date_column": "order_date",
     "selected_features": [
+        "postal_code",
+        "sales",
+        "quantity",
+        "discount",
         "order_date_year",
         "order_date_month",
         "order_date_quarter",
         "order_date_day_of_week",
+        "revenue_per_unit",
+        "ship_mode",
+        "segment",
+        "country",
         "state",
         "region",
-        "country",
         "category",
-        "sub_category",
-        "product_name"
+        "sub_category"
     ],
     "numeric_features": [
+        "postal_code",
+        "sales",
+        "quantity",
+        "discount",
         "order_date_year",
         "order_date_month",
         "order_date_quarter",
-        "order_date_day_of_week"
+        "order_date_day_of_week",
+        "revenue_per_unit"
     ],
     "categorical_features": [
+        "ship_mode",
+        "segment",
+        "country",
         "state",
         "region",
-        "country",
         "category",
-        "sub_category",
-        "product_name"
+        "sub_category"
     ],
     "date_columns": [
-        "order_date"
+        "order_date",
+        "ship_date"
     ],
     "converted_numeric_columns": [],
     "excluded_id_columns": [
-        "order_id"
+        "customer_id",
+        "order_id",
+        "product_id",
+        "row_id"
     ],
     "excluded_high_cardinality_columns": [
         "customer_name",
-        "city"
+        "city",
+        "product_name"
     ],
     "excluded_constant_numeric_features": [],
     "excluded_redundant_numeric_features": [],
     "excluded_target_leakage_features": [
-        "profit",
-        "profit_margin",
-        "quantity",
-        "revenue_per_unit",
-        "unit_price"
+        "profit_margin"
     ],
     "available_targets": [
+        "postal_code",
+        "sales",
         "quantity",
-        "unit_price",
-        "revenue",
+        "discount",
         "profit",
         "order_date_year",
         "order_date_month",
@@ -63,17 +77,17 @@
         "profit_margin",
         "revenue_per_unit"
     ],
-    "best_model": "Linear Regression",
+    "best_model": "Random Forest",
     "metrics": {
-        "r2": 0.27405941520213584,
-        "mae": 417.88206497302224,
-        "rmse": 633.255496553099
+        "r2": -0.09455561213360641,
+        "mae": 27.690246553204954,
+        "rmse": 230.36854496512558
     },
-    "training_rows": 160000,
-    "testing_rows": 40000,
-    "feature_count": 10,
-    "numeric_feature_count": 4,
-    "categorical_feature_count": 6,
+    "training_rows": 7995,
+    "testing_rows": 1999,
+    "feature_count": 16,
+    "numeric_feature_count": 9,
+    "categorical_feature_count": 7,
     "test_size": 0.2,
     "random_state": 42,
     "max_categorical_unique": 100,

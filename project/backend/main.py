@@ -4735,6 +4735,584 @@ def chat(
 
         return result
 
+
+    # ========================================================
+    # USER REQUESTED CHART
+    # ========================================================
+
+    chart_result = _chart_response(
+        question
+    )
+
+    if chart_result is not None:
+
+        if "answer" in chart_result:
+            chart_result["answer"] = repair_mojibake(
+                chart_result["answer"]
+            )
+
+        return chart_result
+
+
+# ============================================================
+# USER REQUESTED CHARTS
+# ============================================================
+
+def _chart_find_column(df, candidates):
+    """Return the real dataframe column matching any candidate name."""
+    normalized = {
+        normalize_column_name(col): col
+        for col in df.columns
+    }
+
+    for candidate in candidates:
+        key = normalize_column_name(candidate)
+        if key in normalized:
+            return normalized[key]
+
+    return None
+
+
+def _is_chart_request(question):
+    """Detect natural-language requests for an actual chart/graph."""
+    q = normalize_text(question)
+
+    chart_words = [
+        "chart",
+        "graph",
+        "plot",
+        "visualize",
+        "visualise",
+        "bar",
+        "line",
+        "scatter",
+        "pie",
+        "donut",
+        "distribution",
+        "comparison",
+        "compare",
+        "relationship",
+        "versus",
+        " vs "
+    ]
+
+    return any(word in q for word in chart_words)
+
+
+def _detect_requested_chart_type(question):
+    """Detect requested Chart.js chart type."""
+    q = normalize_text(question)
+
+    if any(word in q for word in [
+        "scatter",
+        "relationship",
+        "versus",
+        " vs "
+    ]):
+        return "scatter"
+
+    if any(word in q for word in [
+        "pie",
+        "donut",
+        "distribution"
+    ]):
+        return "pie"
+
+    if any(word in q for word in [
+        "line chart",
+        "line graph",
+        "trend",
+        "monthly",
+        "weekly",
+        "daily"
+    ]):
+        return "line"
+
+    if any(word in q for word in [
+        "bar chart",
+        "bar graph",
+        "comparison",
+        "compare"
+    ]):
+        return "bar"
+
+    return None
+
+
+def _chart_metric_column(df, question):
+    """Detect the numeric metric requested by the user."""
+    q = normalize_text(question)
+
+    if "profit margin" in q or "margin" in q:
+        candidates = [
+            "profit_margin",
+            "margin",
+            "profit_percentage"
+        ]
+    elif "revenue per unit" in q:
+        candidates = [
+            "revenue_per_unit"
+        ]
+    elif "unit price" in q or "price" in q:
+        candidates = [
+            "unit_price",
+            "price"
+        ]
+    elif "quantity" in q or "demand" in q or "units" in q:
+        candidates = [
+            "quantity",
+            "qty",
+            "units",
+            "units_sold",
+            "quantity_ordered"
+        ]
+    elif "profit" in q:
+        candidates = [
+            "profit",
+            "net_profit",
+            "gross_profit"
+        ]
+    elif "revenue" in q or "sales" in q or "sale" in q:
+        candidates = [
+            "revenue",
+            "sales",
+            "sales_amount",
+            "total_sales",
+            "sale",
+            "amount"
+        ]
+    else:
+        candidates = []
+
+    column = _chart_find_column(df, candidates)
+    if column is not None:
+        return column
+
+    # Dynamic fallback: first useful numeric column.
+    excluded = {
+        "order_id",
+        "id",
+        "row_id",
+        "postal_code",
+        "zip_code",
+        "zipcode"
+    }
+
+    for col in df.columns:
+        if normalize_column_name(col) in excluded:
+            continue
+
+        values = pd.to_numeric(
+            df[col],
+            errors="coerce"
+        )
+
+        if values.notna().sum() >= 2 and values.nunique() >= 2:
+            return col
+
+    return None
+
+
+def _chart_group_column(df, question):
+    """Detect a categorical/date grouping column from the question."""
+    q = normalize_text(question)
+
+    group_candidates = [
+        ("sub category", ["sub_category"]),
+        ("subcategory", ["sub_category"]),
+        ("category", ["category"]),
+        ("region", ["region"]),
+        ("state", ["state"]),
+        ("city", ["city"]),
+        ("country", ["country"]),
+        ("product", ["product_name", "product"]),
+        ("customer", ["customer_name", "customer"]),
+        ("month", ["order_date", "date", "orderdate"]),
+        ("date", ["order_date", "date", "orderdate"])
+    ]
+
+    for phrase, candidates in group_candidates:
+        if phrase in q:
+            column = _chart_find_column(
+                df,
+                candidates
+            )
+            if column is not None:
+                return column
+
+    # Sensible categorical fallback.
+    preferred = [
+        "category",
+        "sub_category",
+        "region",
+        "state",
+        "country",
+        "city"
+    ]
+
+    column = _chart_find_column(
+        df,
+        preferred
+    )
+
+    if column is not None:
+        return column
+
+    for col in df.columns:
+        if df[col].dtype == "object":
+            return col
+
+    return None
+
+
+def _chart_response(question):
+    """Create a frontend-ready chart response from the active dataset."""
+    if not _is_chart_request(question):
+        return None
+
+    chart_type = _detect_requested_chart_type(question)
+    if chart_type is None:
+        return None
+
+    try:
+        df = get_dataset()
+
+        if df is None or df.empty:
+            return {
+                "success": False,
+                "type": "chart",
+                "answer": "No dataset is currently available for chart generation."
+            }
+
+        # ----------------------------------------------------
+        # Scatter chart: X vs Y
+        # ----------------------------------------------------
+        if chart_type == "scatter":
+            q = normalize_text(question)
+
+            if "quantity" in q and (
+                "revenue" in q or "sales" in q
+            ):
+                x_col = _chart_find_column(
+                    df,
+                    ["quantity", "qty", "units", "units_sold"]
+                )
+                y_col = _chart_find_column(
+                    df,
+                    ["revenue", "sales", "sales_amount", "total_sales", "sale", "amount"]
+                )
+            elif "revenue" in q and "profit" in q:
+                x_col = _chart_find_column(
+                    df,
+                    ["revenue", "sales", "sales_amount", "total_sales"]
+                )
+                y_col = _chart_find_column(
+                    df,
+                    ["profit", "net_profit", "gross_profit"]
+                )
+            elif "price" in q and (
+                "quantity" in q or "demand" in q
+            ):
+                x_col = _chart_find_column(
+                    df,
+                    ["unit_price", "price"]
+                )
+                y_col = _chart_find_column(
+                    df,
+                    ["quantity", "qty", "units", "units_sold"]
+                )
+            else:
+                numeric = []
+                for col in df.columns:
+                    values = pd.to_numeric(
+                        df[col],
+                        errors="coerce"
+                    )
+                    if values.notna().sum() >= 2 and values.nunique() >= 2:
+                        numeric.append(col)
+
+                if len(numeric) < 2:
+                    return None
+
+                x_col, y_col = numeric[:2]
+
+            if x_col is None or y_col is None:
+                return None
+
+            working = df[[x_col, y_col]].copy()
+            working[x_col] = pd.to_numeric(
+                working[x_col],
+                errors="coerce"
+            )
+            working[y_col] = pd.to_numeric(
+                working[y_col],
+                errors="coerce"
+            )
+            working = working.dropna()
+
+            if len(working) > 3000:
+                working = working.sample(
+                    n=3000,
+                    random_state=42
+                )
+
+            data = [
+                {
+                    "x": float(row[x_col]),
+                    "y": float(row[y_col])
+                }
+                for _, row in working.iterrows()
+            ]
+
+            return {
+                "success": True,
+                "provider": "InsightAI Local Analytics",
+                "type": "chart",
+                "answer": f"{x_col} vs {y_col} scatter chart.",
+                "chart": {
+                    "type": "scatter",
+                    "title": f"{x_col} vs {y_col}",
+                    "xLabel": str(x_col),
+                    "yLabel": str(y_col),
+                    "data": data
+                }
+            }
+
+        # ----------------------------------------------------
+        # Revenue + profit comparison bar chart
+        # ----------------------------------------------------
+        if chart_type == "bar":
+            q = normalize_text(question)
+
+            if (
+                ("revenue" in q or "sales" in q)
+                and "profit" in q
+                and (
+                    "comparison" in q
+                    or "compare" in q
+                    or " and " in q
+                )
+            ):
+                revenue_col = _chart_find_column(
+                    df,
+                    ["revenue", "sales", "sales_amount", "total_sales"]
+                )
+                profit_col = _chart_find_column(
+                    df,
+                    ["profit", "net_profit", "gross_profit"]
+                )
+
+                if revenue_col and profit_col:
+                    revenue = pd.to_numeric(
+                        df[revenue_col],
+                        errors="coerce"
+                    ).sum()
+                    profit = pd.to_numeric(
+                        df[profit_col],
+                        errors="coerce"
+                    ).sum()
+
+                    return {
+                        "success": True,
+                        "provider": "InsightAI Local Analytics",
+                        "type": "chart",
+                        "answer": "Revenue and profit comparison chart.",
+                        "chart": {
+                            "type": "bar",
+                            "title": "Revenue vs Profit",
+                            "labels": [
+                                str(revenue_col),
+                                str(profit_col)
+                            ],
+                            "datasets": [
+                                {
+                                    "label": "Total",
+                                    "data": [
+                                        float(revenue),
+                                        float(profit)
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+
+        # ----------------------------------------------------
+        # Monthly/date line chart
+        # ----------------------------------------------------
+        if chart_type == "line":
+            date_col = _chart_find_column(
+                df,
+                [
+                    "order_date",
+                    "date",
+                    "orderdate",
+                    "transaction_date",
+                    "sale_date"
+                ]
+            )
+
+            if date_col is None:
+                return None
+
+            metric_col = _chart_metric_column(
+                df,
+                question
+            )
+
+            if metric_col is None:
+                return None
+
+            temp = df[[date_col, metric_col]].copy()
+            temp[date_col] = pd.to_datetime(
+                temp[date_col],
+                errors="coerce"
+            )
+            temp[metric_col] = pd.to_numeric(
+                temp[metric_col],
+                errors="coerce"
+            )
+            temp = temp.dropna()
+
+            if temp.empty:
+                return None
+
+            monthly = (
+                temp.assign(
+                    period=temp[date_col].dt.to_period("M")
+                )
+                .groupby("period")[metric_col]
+                .sum()
+                .reset_index()
+            )
+
+            return {
+                "success": True,
+                "provider": "InsightAI Local Analytics",
+                "type": "chart",
+                "answer": f"Monthly {metric_col} line chart.",
+                "chart": {
+                    "type": "line",
+                    "title": f"Monthly {metric_col}",
+                    "labels": [
+                        str(value)
+                        for value in monthly["period"]
+                    ],
+                    "datasets": [
+                        {
+                            "label": str(metric_col),
+                            "data": [
+                                float(value)
+                                for value in monthly[metric_col]
+                            ]
+                        }
+                    ]
+                }
+            }
+
+        # ----------------------------------------------------
+        # Category/region/etc. grouped bar or pie chart
+        # ----------------------------------------------------
+        if chart_type in ["bar", "pie"]:
+            group_col = _chart_group_column(
+                df,
+                question
+            )
+            metric_col = _chart_metric_column(
+                df,
+                question
+            )
+
+            if group_col is None or metric_col is None:
+                return None
+
+            # Date grouping is handled as monthly aggregation.
+            if normalize_column_name(group_col) in {
+                "order_date",
+                "date",
+                "orderdate"
+            }:
+                dates = pd.to_datetime(
+                    df[group_col],
+                    errors="coerce"
+                )
+                values = pd.to_numeric(
+                    df[metric_col],
+                    errors="coerce"
+                )
+                temp = pd.DataFrame({
+                    "period": dates.dt.to_period("M"),
+                    "value": values
+                }).dropna()
+                grouped = (
+                    temp.groupby("period")["value"]
+                    .sum()
+                    .sort_values(ascending=False)
+                )
+            else:
+                values = pd.to_numeric(
+                    df[metric_col],
+                    errors="coerce"
+                )
+                temp = pd.DataFrame({
+                    "group": df[group_col].astype(str),
+                    "value": values
+                }).dropna()
+                grouped = (
+                    temp.groupby("group")["value"]
+                    .sum()
+                    .sort_values(ascending=False)
+                )
+
+            # Avoid sending hundreds/thousands of categories to the browser.
+            if len(grouped) > 30:
+                grouped = grouped.head(30)
+
+            labels = [str(index) for index in grouped.index]
+            values = [float(value) for value in grouped.values]
+
+            return {
+                "success": True,
+                "provider": "InsightAI Local Analytics",
+                "type": "chart",
+                "answer": f"{metric_col} by {group_col} {chart_type} chart.",
+                "chart": {
+                    "type": chart_type,
+                    "title": f"{metric_col} by {group_col}",
+                    "labels": labels,
+                    "datasets": [
+                        {
+                            "label": str(metric_col),
+                            "data": values
+                        }
+                    ]
+                }
+            }
+
+    except Exception as exc:
+        print(
+            "Chart generation error:",
+            str(exc)
+        )
+
+    return None
+
+    # --------------------------------------------------------
+    # User requested chart
+    # --------------------------------------------------------
+
+    chart_result = _chart_response(
+        question
+    )
+
+    if chart_result is not None:
+
+        if "answer" in chart_result:
+            chart_result["answer"] = repair_mojibake(
+                chart_result["answer"]
+            )
+
+        return chart_result
+
     # --------------------------------------------------------
     # Deterministic analysis
     # --------------------------------------------------------

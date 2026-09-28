@@ -1,3 +1,4 @@
+
 # ============================================================
 # INSIGHTAI - DYNAMIC MODEL TRAINING
 # FINAL FORECASTING-READY VERSION
@@ -42,9 +43,22 @@ warnings.filterwarnings("ignore")
 # PATHS
 # ============================================================
 
-FEATURE_FILE = r"C:\Users\maury\Downloads\InsightAI_Output\feature_data.csv"
+PROJECT_ROOT = os.path.dirname(
+    os.path.abspath(__file__)
+)
 
-OUTPUT_FOLDER = r"C:\Users\maury\Downloads\InsightAI_Output"
+OUTPUT_FOLDER = os.path.join(
+    PROJECT_ROOT,
+    "InsightAI_Output"
+)
+
+FEATURE_FILE = os.getenv(
+    "INSIGHTAI_FEATURE_FILE",
+    os.path.join(
+        OUTPUT_FOLDER,
+        "feature_data.csv"
+    )
+)
 
 MODEL_FILE = os.path.join(
     OUTPUT_FOLDER,
@@ -59,6 +73,11 @@ METADATA_FILE = os.path.join(
 RESULT_FILE = os.path.join(
     OUTPUT_FOLDER,
     "model_results.csv"
+)
+
+os.makedirs(
+    OUTPUT_FOLDER,
+    exist_ok=True
 )
 
 
@@ -328,6 +347,7 @@ def get_available_targets(df):
             valid_count > 0
             and unique_count >= 2
         ):
+
             targets.append(column)
 
     return targets
@@ -1136,7 +1156,6 @@ selected_features = [
     if column != TARGET
 ]
 
-
 if not selected_features:
 
     raise ValueError(
@@ -1401,7 +1420,10 @@ if (
         len(X) * (1 - TEST_SIZE)
     )
 
-    if split_index <= 0 or split_index >= len(X):
+    if (
+        split_index <= 0
+        or split_index >= len(X)
+    ):
 
         raise ValueError(
             "Invalid chronological train/test split."
@@ -1732,7 +1754,6 @@ results_df = results_df.sort_values(
     drop=True
 )
 
-
 print(
     "\n============================================================"
 )
@@ -1775,7 +1796,6 @@ best_mae = float(
 best_rmse = float(
     results_df.iloc[0]["RMSE"]
 )
-
 
 print(
     "\n============================================================"
@@ -2056,4 +2076,3 @@ print(
 print(
     "\nReady for FastAPI backend."
 )
-
